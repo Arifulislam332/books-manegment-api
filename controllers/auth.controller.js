@@ -1,6 +1,7 @@
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
+const { Error } = require("mongoose");
 
 const createUser = async (req, res) => {
   try {
@@ -43,6 +44,26 @@ const createUser = async (req, res) => {
   }
 };
 
-const loginUser = async () => {};
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // required fields
+    if (!email || !password) throw new Error("Email and password is required!");
+
+    // check if the user exists or not
+    const user = await userModel.findOne({ email });
+
+    if (!user) throw new Error("User not found!");
+
+    // password decryption
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) throw new Error("User not found!");
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 module.exports = { createUser, loginUser };
