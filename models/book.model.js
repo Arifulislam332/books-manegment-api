@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const bookSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true },
+    title: { type: String, required: true },
+    image: { type: String, required: true },
     genre: { type: String, required: true },
     author: { type: String, required: true },
     discription: { type: String },

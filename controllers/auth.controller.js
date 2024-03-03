@@ -1,7 +1,6 @@
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
-const { Error } = require("mongoose");
 
 const createUser = async (req, res) => {
   try {
