@@ -49,8 +49,50 @@ const getABook = async (req, res) => {
   }
 };
 
-const updateABook = async (req, res) => {};
+const updateABook = async (req, res) => {
+  try {
+    const { bookid } = req.params;
+    const { title, image, author, genre, description } = req.body;
 
-const deleteABook = async (req, res) => {};
+    if (!mongoose.Types.ObjectId.isValid(bookid))
+      throw new Error("Invalid book id");
+
+    const book = await bookModel.findById(bookid);
+
+    if (!book) throw new Error("Book not found");
+
+    const updatedBook = await bookModel.findByIdAndUpdate(
+      bookid,
+      {
+        title,
+        image,
+        author,
+        genre,
+        description,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedBook);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const deleteABook = async (req, res) => {
+  try {
+    const { bookid } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(bookid))
+      throw new Error("Invalid book id");
+
+    const deletedBook = await bookModel.findByIdAndDelete(bookid);
+
+    if (!deletedBook) throw new Error("Book not found!");
+
+    res.status(200).json({ message: "Book deleted successfully", deletedBook });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 module.exports = { createBook, getAllBook, getABook, updateABook, deleteABook };
