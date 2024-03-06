@@ -1,6 +1,7 @@
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
+const createToken = require("../helpers/token.helper");
 
 const createUser = async (req, res) => {
   try {
@@ -37,7 +38,10 @@ const createUser = async (req, res) => {
       address,
     });
 
-    res.status(201).json(user);
+    // create token
+    const token = createToken(user._id);
+
+    res.status(201).json({ user, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -59,7 +63,10 @@ const loginUser = async (req, res) => {
 
     if (!match) throw new Error("User not found!");
 
-    res.status(200).json(user);
+    // create token
+    const token = createToken(user._id);
+
+    res.status(200).json({ user, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
